@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.hdodenhof.circleimageview;
+package com.howo.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -22,6 +22,7 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -74,6 +75,7 @@ public class CircleImageView extends ImageView {
     private boolean mSetupPending;
     private boolean mBorderOverlay;
     private boolean mDisableCircularTransformation;
+    private boolean mDisableCircularDottedLine;
 
     public CircleImageView(Context context) {
         super(context);
@@ -94,6 +96,7 @@ public class CircleImageView extends ImageView {
         mBorderColor = a.getColor(R.styleable.CircleImageView_civ_border_color, DEFAULT_BORDER_COLOR);
         mBorderOverlay = a.getBoolean(R.styleable.CircleImageView_civ_border_overlay, DEFAULT_BORDER_OVERLAY);
         mFillColor = a.getColor(R.styleable.CircleImageView_civ_fill_color, DEFAULT_FILL_COLOR);
+        mDisableCircularDottedLine = a.getBoolean(R.styleable.CircleImageView_civ_dotted_line, DEFAULT_BORDER_OVERLAY);
 
         a.recycle();
 
@@ -144,6 +147,12 @@ public class CircleImageView extends ImageView {
             canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mFillPaint);
         }
         canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mBitmapPaint);
+
+        if(mDisableCircularDottedLine) {
+            DashPathEffect effects = new DashPathEffect(new float[]{4, 4}, 0);
+            mBorderPaint.setPathEffect(effects);
+        }
+
         if (mBorderWidth > 0) {
             canvas.drawCircle(mBorderRect.centerX(), mBorderRect.centerY(), mBorderRadius, mBorderPaint);
         }
